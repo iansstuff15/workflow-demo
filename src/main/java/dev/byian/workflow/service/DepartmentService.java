@@ -137,21 +137,5 @@ public class DepartmentService {
         }
     }
 
-    public ResponseEntity<Map<String, Object>> getFirstDepartment() {
-        Map<String, Object> responseMap = new HashMap<>();
-        try {
-            Optional<Department> department = departmentDao.findFirstByOrderByIdAsc();
-            if (department.isEmpty()) {
-                responseMap.put("message", "No department found");
-                responseMap.put("size", 0);
-                return new ResponseEntity<>(responseMap,HttpStatus.NO_CONTENT);
-            }
-            responseMap.put("size", 1);
-            responseMap.put("data", department.get());
-            return new ResponseEntity<>(responseMap, HttpStatus.OK);
-        } catch (Exception e) {
-            responseMap.put("message", e.getMessage());
-            return new ResponseEntity<>(responseMap, HttpStatus.BAD_REQUEST);
-        }
-    }
+
 }

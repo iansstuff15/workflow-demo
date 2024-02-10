@@ -25,10 +25,7 @@ public class DepartmentController {
         PageRequest pageRequest = PageRequest.of(page, size);
         return departmentService.getAllDepartments(pageRequest);
     }
-    @GetMapping("/find/first")
-    public ResponseEntity<Map<String,Object>> getFirstDepartment() {
-        return departmentService.getFirstDepartment();
-    }
+
     @GetMapping(value = "/find", params = "id")
     public ResponseEntity<Map<String,Object>> getDepartmentById(@RequestParam("id") UUID id) {
         return departmentService.getDepartmentById(id);
