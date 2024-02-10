@@ -20,7 +20,7 @@ public class Department {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String name;
     @Column(updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
