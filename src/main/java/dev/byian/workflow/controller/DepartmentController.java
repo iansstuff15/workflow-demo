@@ -42,17 +42,17 @@ public class DepartmentController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Map<String,String>> addDepartment(@RequestBody Department department) {
+    public ResponseEntity<Map<String,Object>> addDepartment(@RequestBody Department department) {
         return departmentService.addDepartment(department);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Map<String, String>> updateDepartment(@RequestBody Department department) {
+    public ResponseEntity<Map<String, Object>> updateDepartment(@RequestBody Department department) {
         return departmentService.updateDepartment(department);
     }
 
     @GetMapping(value = "/generate", params = "count")
-    public ResponseEntity <Map<String, String>> generateDepartments(@RequestParam("count") int count) {
+    public ResponseEntity <Map<String, Object>> generateDepartments(@RequestParam("count") int count) {
         return departmentService.generateFakeDepartment(count);
     }
 

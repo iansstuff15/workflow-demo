@@ -37,11 +37,12 @@ public class DepartmentService {
        }
     }
 
-    public ResponseEntity<Map<String,String>> addDepartment(Department department) {
-        Map<String, String> responseMap = new HashMap<>();
+    public ResponseEntity<Map<String,Object>> addDepartment(Department department) {
+        Map<String, Object> responseMap = new HashMap<>();
        try {
            departmentDao.save(department);
            responseMap.put("message", "Department " + department.getName() + " added successfully");
+              responseMap.put("data", department);
            return new ResponseEntity<>(responseMap, HttpStatus.CREATED);
        } catch (Exception e) {
            responseMap.put("message", e.getMessage());
@@ -61,11 +62,13 @@ public class DepartmentService {
         }
     }
 
-    public ResponseEntity<Map<String,String>> updateDepartment(Department department) {
-        Map<String,String> responseMap = new HashMap<>();
+    public ResponseEntity<Map<String,Object>> updateDepartment(Department department) {
+        Map<String,Object> responseMap = new HashMap<>();
+
         try {
             departmentDao.save(department);
-            responseMap.put("message", "Department updated successfully with ID of " + department.getId() + " and name of " + department.getName());
+            responseMap.put("message", "Department updated successfully with ID of " + department.getId());
+            responseMap.put("data", department);
             return new ResponseEntity<>(responseMap, HttpStatus.OK);
         } catch (Exception e) {
             responseMap.put("message", e.getMessage());
@@ -109,8 +112,9 @@ public class DepartmentService {
         }
     }
 
-    public ResponseEntity <Map<String, String>> generateFakeDepartment(int count){
-        Map<String, String> responseMap = new HashMap<>();
+    public ResponseEntity <Map<String, Object>> generateFakeDepartment(int count){
+        Map<String, Object> responseMap = new HashMap<>();
+        List<Department> departmentList = new ArrayList<>();
         try {
             int savedCounter = 0;
             int duplicateCounter = 0;
@@ -127,8 +131,9 @@ public class DepartmentService {
                 else{
                     duplicateCounter++;
                 }
-
+                departmentList.add(department);
             }
+            responseMap.put("data", departmentList);
             responseMap.put("message", savedCounter + " fake department added successfully with " + duplicateCounter + " duplicates");
             return new ResponseEntity<>(responseMap, HttpStatus.CREATED);
         } catch (Exception e) {
