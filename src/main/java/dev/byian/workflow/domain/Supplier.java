@@ -24,7 +24,7 @@ public class Supplier {
     private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
     @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Timestamp updatedAt = new Timestamp(System.currentTimeMillis());
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String name;
     @Column(nullable = false)
     private String address;
