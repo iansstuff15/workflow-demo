@@ -1,5 +1,9 @@
 package dev.byian.workflow.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +18,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Table(name="employee")
 public class Employee {
     @Id
@@ -49,12 +54,25 @@ public class Employee {
     @Column(nullable = false)
     //bi monthly, monthly, annually
     private String paySchedule;
-    @ManyToOne
-    @JoinColumn(nullable = false)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id",nullable = false)
+    @JsonBackReference
     private Department department;
-    @ManyToOne
-    @JoinColumn()
-    private Employee supervisor;
-    @OneToMany(mappedBy = "supervisor")
-    private List<Employee> subordinates;
+
+    public void update(Employee employee){
+    if(employee.getFirstName() != null) this.setFirstName(employee.getFirstName());
+    if(employee.getLastName() != null) this.setLastName(employee.getLastName());
+    if(employee.getPhone() != null) this.setPhone(employee.getPhone());
+    if(employee.getPosition() != null) this.setPosition(employee.getPosition());
+    if(employee.getEmail() != null) this.setEmail(employee.getEmail());
+    if(employee.getDailyRate() != 0.0) this.setDailyRate(employee.getDailyRate());
+    if(employee.getPaySchedule() != null) this.setPaySchedule(employee.getPaySchedule());
+    if(employee.getDepartment() != null) this.setDepartment(employee.getDepartment());
+    if(employee.getSickLeaveCredits() != 0.0) this.setSickLeaveCredits(employee.getSickLeaveCredits());
+    if(employee.getVacationLeaveCredits() != 0.0) this.setVacationLeaveCredits(employee.getVacationLeaveCredits());
+    if(employee.getEmergencyLeaveCredits() != 0.0) this.setEmergencyLeaveCredits(employee.getEmergencyLeaveCredits());
+    if(employee.getMaternityLeaveCredits() != 0.0) this.setMaternityLeaveCredits(employee.getMaternityLeaveCredits());
+    if(employee.getPaternityLeaveCredits() != 0.0) this.setPaternityLeaveCredits(employee.getPaternityLeaveCredits());
+    this.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+    }
 }
