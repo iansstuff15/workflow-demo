@@ -66,9 +66,15 @@ public class DepartmentService {
         Map<String,Object> responseMap = new HashMap<>();
 
         try {
-            departmentDao.save(department);
+           Optional<Department> deparmentResponse = departmentDao.findById(department.getId());
+            if (deparmentResponse.isEmpty()) {
+                responseMap.put("message", "No department found with ID " + department.getId());
+                return new ResponseEntity<>(responseMap,HttpStatus.NO_CONTENT);
+            }
+            deparmentResponse.get().update(department);
+            departmentDao.save(deparmentResponse.get());
             responseMap.put("message", "Department updated successfully with ID of " + department.getId());
-            responseMap.put("data", department);
+            responseMap.put("data", deparmentResponse);
             return new ResponseEntity<>(responseMap, HttpStatus.OK);
         } catch (Exception e) {
             responseMap.put("message", e.getMessage());

@@ -34,4 +34,9 @@ public class Department {
     @OneToMany(mappedBy = "department", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Employee> employees;
+
+    public void update(Department department) {
+        this.name = department.getName();
+        this.updatedAt = new Timestamp(System.currentTimeMillis());
+    }
 }
