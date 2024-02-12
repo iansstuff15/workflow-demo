@@ -67,7 +67,7 @@ public class SupplierController {
     }
 
     @GetMapping(value = "/generate", params = "count")
-    public ResponseEntity <Map<String, String>> generateSuppliers(@RequestParam("count") int count) {
+    public ResponseEntity <Map<String, Object>> generateSuppliers(@RequestParam("count") int count) {
         return supplierService.generateFakeSupplier(count);
     }
 

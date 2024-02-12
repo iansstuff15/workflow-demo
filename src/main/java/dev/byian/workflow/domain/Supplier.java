@@ -33,5 +33,11 @@ public class Supplier {
     @Column(nullable = false)
     private String email;
 
-
+    public void update(Supplier supplier){
+        if(supplier.getName() != null) this.setName(supplier.getName());
+        if(supplier.getAddress() != null) this.setAddress(supplier.getAddress());
+        if(supplier.getContactNumber() != null) this.setContactNumber(supplier.getContactNumber());
+        if(supplier.getEmail() != null) this.setEmail(supplier.getEmail());
+        this.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+    }
 }

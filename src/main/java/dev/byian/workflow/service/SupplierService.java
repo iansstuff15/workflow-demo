@@ -72,27 +72,11 @@ public class SupplierService {
                 responseMap.put("message", "No supplier found with ID " + supplier.getId());
                 return new ResponseEntity<>(responseMap, HttpStatus.NO_CONTENT);
             }
-            else{
-                Supplier updatedSupplier = supplierResponse.get();
-                if(supplier.getName() != null){
-                    updatedSupplier.setName(supplier.getName());
-                }
-                if(supplier.getAddress() != null){
-                    updatedSupplier.setAddress(supplier.getAddress());
-                }
-                if(supplier.getContactNumber() != null){
-                    updatedSupplier.setContactNumber(supplier.getContactNumber());
-                }
-                if(supplier.getEmail() != null){
-                    updatedSupplier.setEmail(supplier.getEmail());
-                }
-                updatedSupplier.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
-
-                supplierDao.save(updatedSupplier);
-                responseMap.put("message", "Supplier updated successfully with ID of " + supplier.getId());
-                responseMap.put("data", updatedSupplier);
-                return new ResponseEntity<>(responseMap, HttpStatus.OK);
-            }
+            supplierResponse.get().update(supplier);
+            supplierDao.save(supplierResponse.get());
+            responseMap.put("message", "Supplier updated successfully with ID of " + supplier.getId());
+            responseMap.put("data", supplierResponse.get());
+            return new ResponseEntity<>(responseMap, HttpStatus.OK);
 
         } catch (Exception e) {
             responseMap.put("message", e.getMessage());
@@ -136,8 +120,9 @@ public class SupplierService {
         }
     }
 
-    public ResponseEntity <Map<String, String>> generateFakeSupplier(int count){
-        Map<String, String> responseMap = new HashMap<>();
+    public ResponseEntity <Map<String, Object>> generateFakeSupplier(int count){
+        Map<String, Object> responseMap = new HashMap<>();
+        List<Supplier> supplierList = new ArrayList<>();
         try {
             int savedCounter = 0;
             int duplicateCounter = 0;
@@ -153,6 +138,7 @@ public class SupplierService {
                     supplier.setEmail(faker.internet().emailAddress());
                     supplierDao.save(supplier);
                     savedCounter++;
+                    supplierList.add(supplier);
                 }
                 else{
                     duplicateCounter++;
@@ -160,6 +146,7 @@ public class SupplierService {
 
             }
             responseMap.put("message", savedCounter + " fake supplier added successfully with " + duplicateCounter + " duplicates");
+            responseMap.put("data", supplierList);
             return new ResponseEntity<>(responseMap, HttpStatus.CREATED);
         } catch (Exception e) {
             responseMap.put("message", e.getMessage());
