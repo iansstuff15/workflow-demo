@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>dev.by-ian</groupId>
 	<artifactId>workflow</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>workflow</name>
 	<description>Workflow Backend API</description>
 	<properties>
@@ -58,6 +58,11 @@
 			<groupId>com.github.javafaker</groupId>
 			<artifactId>javafaker</artifactId>
 			<version>1.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
