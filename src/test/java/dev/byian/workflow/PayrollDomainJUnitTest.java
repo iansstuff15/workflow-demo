@@ -1,91 +1,91 @@
 package dev.byian.workflow;
-
-import dev.byian.workflow.domain.Department;
 import dev.byian.workflow.domain.Employee;
-import dev.byian.workflow.domain.Supplier;
+import dev.byian.workflow.domain.Payroll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-public class SupplierDomainJUnitTest {
-    @Test
-    void shouldBeAbleToSetSupplierName() {
-        Supplier supplier = new Supplier();
-        supplier.setName("Supplier 1");
-        Assertions.assertEquals("Supplier 1", supplier.getName());
+public class PayrollDomainJUnitTest {
+   @Test
+    public void payrollShouldHaveGrossPay() {
+       Payroll payroll = new Payroll();
+       payroll.setGrossPay(1000);
+       Assertions.assertEquals(1000, payroll.getGrossPay());
     }
     @Test
-    void shouldBeAbleToSetSupplierAddress() {
-        Supplier supplier = new Supplier();
-        supplier.setAddress("Supplier 1 Address");
-        Assertions.assertEquals("Supplier 1 Address", supplier.getAddress());
+    public void payrollShouldHaveNetPay() {
+        Payroll payroll = new Payroll();
+        payroll.setNetPay(1000);
+        Assertions.assertEquals(1000, payroll.getNetPay());
     }
     @Test
-    void shouldBeAbleToSetSupplierContactNumber() {
-        Supplier supplier = new Supplier();
-        supplier.setContactNumber("1234567890");
-        Assertions.assertEquals("1234567890", supplier.getContactNumber());
+    public void payrollShouldHaveDeductions() {
+        Payroll payroll = new Payroll();
+        payroll.setDeductions(1000);
+        Assertions.assertEquals(1000, payroll.getDeductions());
     }
     @Test
-    void shouldBeAbleToSetSupplierEmail() {
-        Supplier supplier = new Supplier();
-        supplier.setEmail("test@email.com");
-        Assertions.assertEquals("test@email.com", supplier.getEmail());
+    public void payrollShouldHaveEmployee() {
+        Payroll payroll = new Payroll();
+        payroll.setEmployee(new Employee());
+        Assertions.assertNotNull(payroll.getEmployee());
     }
     @Test
-    void shouldBeAbleToUpdateSupplierWithNewSupplier() {
-        Supplier supplier = new Supplier();
-        supplier.setName("Supplier 1");
-        supplier.setAddress("Supplier 1 Address");
-        supplier.setContactNumber("1234567890");
-        supplier.setEmail("test@email.com:");
-        Supplier newSupplier = new Supplier();
-        newSupplier.setName("Supplier 2");
-        newSupplier.setAddress("Supplier 2 Address");
-        newSupplier.setContactNumber("0987654321");
-        newSupplier.setEmail("test2@email.com");
-        supplier.update(newSupplier);
-        Assertions.assertEquals("Supplier 2", supplier.getName());
-        Assertions.assertEquals("Supplier 2 Address", supplier.getAddress());
-        Assertions.assertEquals("0987654321", supplier.getContactNumber());
-        Assertions.assertEquals("test2@email.com", supplier.getEmail());
+    public void payrollCanHaveAssignedID() {
+        Payroll payroll = new Payroll();
+        payroll.setId(UUID.fromString("f47ac10b-58cc-4372-a567-0e02b2c3d479"));
+        Assertions.assertEquals("f47ac10b-58cc-4372-a567-0e02b2c3d479",payroll.getId().toString());
     }
     @Test
-    void shouldUpdateSupplierNameFromSupplier1ToSupplier2() {
-        Supplier supplier = new Supplier();
-        supplier.setName("Supplier 1");
-        supplier.update(Supplier.builder().name("Supplier 2").build());
-        String name = supplier.getName();
-        Assertions.assertEquals("Supplier 2", name);
+    public void payrollCanBeUpdatedFromAnotherPayroll() {
+        Payroll payroll = new Payroll();
+        payroll.setGrossPay(1000);
+        payroll.setDeductions(100);
+        Payroll newPayroll = new Payroll();
+        newPayroll.setGrossPay(2000);
+        newPayroll.setDeductions(200);
+        payroll.update(newPayroll);
+        Assertions.assertEquals(2000, payroll.getGrossPay());
+        Assertions.assertEquals(1800, payroll.getNetPay());
+        Assertions.assertEquals(200, payroll.getDeductions());
     }
     @Test
-    void shouldUpdateSupplierAddressFromSupplier1AddressToSupplier2Address() {
-        Supplier supplier = new Supplier();
-        supplier.setAddress("Supplier 1 Address");
-        supplier.update(Supplier.builder().address("Supplier 2 Address").build());
-        String address = supplier.getAddress();
-        Assertions.assertEquals("Supplier 2 Address", address);
+    public void payrollDeductionCanBeUpdatedFromAnotherPayroll(){
+        Payroll payroll = new Payroll();
+        payroll.setGrossPay(1000);
+        payroll.setDeductions(100);
+        Payroll newPayroll = new Payroll();
+        newPayroll.setDeductions(200);
+        payroll.update(newPayroll);
+        Assertions.assertEquals(1000, payroll.getGrossPay());
+        Assertions.assertEquals(800, payroll.getNetPay());
+        Assertions.assertEquals(200, payroll.getDeductions());
     }
     @Test
-    void shouldUpdateSupplierEmailFromSupplier1EmailToSupplier2Email() {
-        Supplier supplier = new Supplier();
-        supplier.setEmail("test@email.com");
-        supplier.update(Supplier.builder().email("test2@email.com").build());
+    public  void  payrollGrossPayCanBeUpdatedFromAnotherPayroll(){
+        Payroll payroll = new Payroll();
+        payroll.setGrossPay(1000);
+        payroll.setDeductions(100);
+        Payroll newPayroll = new Payroll();
+        newPayroll.setGrossPay(2000);
+        payroll.update(newPayroll);
+        Assertions.assertEquals(2000, payroll.getGrossPay());
+        Assertions.assertEquals(1900, payroll.getNetPay());
+        Assertions.assertEquals(100, payroll.getDeductions());
     }
     @Test
-    void shouldUpdateSupplierContactNumberFromSupplier1ContactNumberToSupplier2ContactNumber() {
-        Supplier supplier = new Supplier();
-        supplier.setContactNumber("1234567890");
-        supplier.update(Supplier.builder().contactNumber("0987654321").build());
-        String contactNumber = supplier.getContactNumber();
-        Assertions.assertEquals("0987654321", contactNumber);
+    public  void payrollGrossPayCanBeUpdatedFromPayroll1ToPayroll2GrossPay(){
+        Payroll payroll = new Payroll();
+        payroll.setGrossPay(1000);
+        payroll.update(Payroll.builder().grossPay(2000).build());
+        Assertions.assertEquals(2000, payroll.getGrossPay());
     }
     @Test
-    void shouldBeAbleToProvideSupplierId() {
-        Supplier supplier = new Supplier();
-        supplier.setId(UUID.fromString("e0defa9c-1389-46e6-a9c1-73aaa5fe53d1"));
-        Assertions.assertEquals(UUID.fromString("e0defa9c-1389-46e6-a9c1-73aaa5fe53d1"), supplier.getId());
+    public  void payrollDeductionsCanBeUpdatedFromPayroll1ToPayroll2Deductions(){
+        Payroll payroll = new Payroll();
+        payroll.setDeductions(100);
+        payroll.update(Payroll.builder().deductions(200).build());
+        Assertions.assertEquals(200, payroll.getDeductions());
     }
-
 }

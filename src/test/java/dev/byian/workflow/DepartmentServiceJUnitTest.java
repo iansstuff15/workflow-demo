@@ -1,105 +1,118 @@
 package dev.byian.workflow;
 
+import dev.byian.workflow.dao.DepartmentDao;
 import dev.byian.workflow.domain.Department;
 import dev.byian.workflow.domain.Employee;
+import dev.byian.workflow.service.DepartmentService;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
-public class DepartmentDomainJUnitTest {
+import static org.mockito.Mockito.*;
+
+@ExtendWith(MockitoExtension.class)
+public class DepartmentServiceJUnitTest {
+   @Mock
+   private DepartmentDao departmentDao;
+   @InjectMocks
+    private DepartmentService departmentService;
     @Test
-    void shouldCreateITDepartment() {
-        Department department = new Department();
-        department.setName("IT");
-        String name = department.getName();
-        Assertions.assertEquals("IT", name);
+    void testGetAllDepartments() {
+        PageRequest pageRequest = PageRequest.of(1, 10);
+        Page<Department> mockedPage = mock(Page.class);
+        when(mockedPage.isEmpty()).thenReturn(false);
+        when(departmentDao.findAll(pageRequest)).thenReturn(mockedPage);
+
+        ResponseEntity<Map<String, Object>> response = departmentService.getAllDepartments(pageRequest);
+
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertNotNull(response.getBody());
+        Assertions.assertNotNull( response.getBody().get("size"));
+        Assertions.assertNotNull(response.getBody().get("data"));
+        verify(departmentDao, times(1)).findAll(pageRequest);
     }
     @Test
-    void shouldCreateHRDepartment() {
+    void testAddDepartment() {
         Department department = new Department();
-        department.setName("HR");
-        String name = department.getName();
-        Assertions.assertEquals("HR", name);
-    }
-    @Test
-    void shouldCreateFinanceDepartment() {
-        Department department = new Department();
-        department.setName("Finance");
-        String name = department.getName();
-        Assertions.assertEquals("Finance", name);
-    }
-    @Test
-    void shouldCreateMarketingDepartment() {
-        Department department = new Department();
-        department.setName("Marketing");
-        String name = department.getName();
-        Assertions.assertEquals("Marketing", name);
-    }
-    @Test
-    void shouldCreateSalesDepartment() {
-        Department department = new Department();
-        department.setName("Sales");
-        String name = department.getName();
-        Assertions.assertEquals("Sales", name);
-    }
-    @Test
-    void shouldCreateDepartmentWithProvidedID() {
-        Department department = new Department();
-        department.setId(UUID.fromString("cdc85dcb-072d-490d-8a7a-9c6ff7937f8b"));
-        String id = department.getId().toString();
-        Assertions.assertEquals("cdc85dcb-072d-490d-8a7a-9c6ff7937f8b", id);
+        when(departmentDao.save(department)).thenReturn(department);
+
+        ResponseEntity<Map<String, Object>> response = departmentService.addDepartment(department);
+
+        Assertions.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        Assertions.assertNotNull(response.getBody());
+        Assertions.assertEquals("Department " + department.getName() + " added successfully", response.getBody().get("message"));
+        Assertions.assertNotNull(response.getBody().get("data"));
+        verify(departmentDao, times(1)).save(department);
     }
 
     @Test
-    void shouldUpdateDepartmentNameFromItToHr() {
-        Department department = new Department();
-        department.setName("IT");
-        department.update(Department.builder().name("HR").build());
-        String name = department.getName();
-        Assertions.assertEquals("HR", name);
+    void testDeleteDepartment() {
+
+        UUID id = UUID.randomUUID();
+
+        ResponseEntity<Map<String, String>> response = departmentService.deleteDepartment(id);
+
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertNotNull(response.getBody());
+        Assertions.assertEquals("Department deleted successfully with ID of " + id, response.getBody().get("message"));
+        verify(departmentDao, times(1)).deleteById(id);
     }
+
     @Test
-    void shouldUpdateDepartmentNameFromItToFinance() {
+    void testUpdateDepartment() {
+
         Department department = new Department();
-        department.setName("IT");
-        department.update(Department.builder().name("Finance").build());
-        String name = department.getName();
-        Assertions.assertEquals("Finance", name);
+        department.setId(UUID.randomUUID());
+        when(departmentDao.findById(department.getId())).thenReturn(Optional.of(department));
+        when(departmentDao.save(department)).thenReturn(department);
+
+        ResponseEntity<Map<String, Object>> response = departmentService.updateDepartment(department);
+
+        Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
+        Assertions.assertNotNull(response.getBody());
+        Assertions.assertEquals("Department updated successfully with ID of " + department.getId(), response.getBody().get("message"));
+        Assertions.assertNotNull(response.getBody().get("data"));
+        verify(departmentDao, times(1)).findById(department.getId());
+        verify(departmentDao, times(1)).save(department);
     }
+
     @Test
-    void shouldUpdateDepartmentNameFromItToMarketing() {
+    void testUpdateDepartmentNotFound() {
         Department department = new Department();
-        department.setName("IT");
-        department.update(Department.builder().name("Marketing").build());
-        String name = department.getName();
-        Assertions.assertEquals("Marketing", name);
+        department.setId(UUID.randomUUID());
+        when(departmentDao.findById(department.getId())).thenReturn(Optional.empty());
+        ResponseEntity<Map<String, Object>> response = departmentService.updateDepartment(department);
+
+        Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        Assertions.assertNotNull(response.getBody());
+        Assertions.assertEquals("No department found with ID " + department.getId(), response.getBody().get("message"));
+        verify(departmentDao, times(1)).findById(department.getId());
+        verify(departmentDao, never()).save(department);
     }
+
     @Test
-    void shouldUpdateDepartmentNameFromItToSales() {
-        Department department = new Department();
-        department.setName("IT");
-        department.update(Department.builder().name("Sales").build());
-        String name = department.getName();
-        Assertions.assertEquals("Sales", name);
-    }
-    @Test
-    void departmentShouldHaveOneEmployees() {
-        Department department = new Department();
-        Employee employee = new Employee();
-        department.setEmployees(List.of(employee));
-        Assertions.assertEquals(1, department.getEmployees().size());
-    }
-    @Test
-    void departmentShouldHaveFiveEmployees() {
-        Department department = new Department();
-        Employee employee1 = new Employee();
-        Employee employee2 = new Employee();
-        Employee employee3 = new Employee();
-        Employee employee4 = new Employee();
-        Employee employee5 = new Employee();
-        department.setEmployees(List.of(employee1, employee2, employee3, employee4, employee5));
-        Assertions.assertEquals(5, department.getEmployees().size());
+    void testGetDepartmentByIdNotFound() {
+        UUID id = UUID.randomUUID();
+        when(departmentDao.findById(id)).thenReturn(Optional.empty());
+
+        ResponseEntity<Map<String, Object>> response = departmentService.getDepartmentById(id);
+
+        Assertions.assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        Assertions.assertNotNull(response.getBody());
+        Assertions.assertEquals("No department found with ID " + id, response.getBody().get("message"));
+        verify(departmentDao, times(1)).findById(id);
     }
 }
