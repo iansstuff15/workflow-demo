@@ -1,0 +1,173 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > Supplier</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dev.byian.workflow.domain</a>
+</div>
+
+<h1>Coverage Summary for Class: Supplier (dev.byian.workflow.domain)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Supplier</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (12/12)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (18/18)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">Supplier$SupplierBuilder</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>Total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (13/13)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (19/19)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dev.byian.workflow.domain;
+&nbsp;
+&nbsp;import jakarta.persistence.*;
+&nbsp;import lombok.AllArgsConstructor;
+&nbsp;import lombok.Builder;
+&nbsp;import lombok.Data;
+&nbsp;import lombok.NoArgsConstructor;
+&nbsp;
+&nbsp;import java.sql.Timestamp;
+&nbsp;import java.util.List;
+&nbsp;import java.util.UUID;
+&nbsp;
+<b class="fc">&nbsp;@Data</b>
+<b class="fc">&nbsp;@AllArgsConstructor</b>
+<b class="fc">&nbsp;@NoArgsConstructor</b>
+<b class="fc">&nbsp;@Builder</b>
+&nbsp;@Entity
+&nbsp;@Table(name=&quot;supplier&quot;)
+&nbsp;public class Supplier {
+&nbsp;    @Id
+&nbsp;    @GeneratedValue(strategy = GenerationType.AUTO)
+<b class="fc">&nbsp;    private UUID id;</b>
+<b class="fc">&nbsp;    @Column(updatable = false, columnDefinition = &quot;TIMESTAMP DEFAULT CURRENT_TIMESTAMP&quot;)</b>
+<b class="fc">&nbsp;    private Timestamp createdAt = new Timestamp(System.currentTimeMillis());</b>
+<b class="fc">&nbsp;    @Column(columnDefinition = &quot;TIMESTAMP DEFAULT CURRENT_TIMESTAMP&quot;)</b>
+<b class="fc">&nbsp;    private Timestamp updatedAt = new Timestamp(System.currentTimeMillis());</b>
+&nbsp;    @Column(nullable = false,unique = true)
+<b class="fc">&nbsp;    private String name;</b>
+&nbsp;    @Column(nullable = false)
+<b class="fc">&nbsp;    private String address;</b>
+&nbsp;    @Column(nullable = false)
+<b class="fc">&nbsp;    private String contactNumber;</b>
+&nbsp;    @Column(nullable = false)
+<b class="fc">&nbsp;    private String email;</b>
+&nbsp;
+&nbsp;    public void update(Supplier supplier){
+<b class="fc">&nbsp;        if(supplier.getName() != null) this.setName(supplier.getName());</b>
+<b class="fc">&nbsp;        if(supplier.getAddress() != null) this.setAddress(supplier.getAddress());</b>
+<b class="fc">&nbsp;        if(supplier.getContactNumber() != null) this.setContactNumber(supplier.getContactNumber());</b>
+<b class="fc">&nbsp;        if(supplier.getEmail() != null) this.setEmail(supplier.getEmail());</b>
+<b class="fc">&nbsp;        this.setUpdatedAt(new Timestamp(System.currentTimeMillis()));</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-02-11 23:51</div>
+</div>
+</body>
+</html>

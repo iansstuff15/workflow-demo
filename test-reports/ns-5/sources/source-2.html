@@ -1,0 +1,284 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > EmployeeService</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">dev.byian.workflow.service</a>
+</div>
+
+<h1>Coverage Summary for Class: EmployeeService (dev.byian.workflow.service)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">EmployeeService</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/111)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package dev.byian.workflow.service;
+&nbsp;
+&nbsp;import com.github.javafaker.Faker;
+&nbsp;import dev.byian.workflow.dao.DepartmentDao;
+&nbsp;import dev.byian.workflow.dao.EmployeeDao;
+&nbsp;import dev.byian.workflow.domain.Department;
+&nbsp;import dev.byian.workflow.domain.Employee;
+&nbsp;import dev.byian.workflow.domain.Supplier;
+&nbsp;import org.springframework.data.domain.Page;
+&nbsp;import org.springframework.data.domain.PageRequest;
+&nbsp;import org.springframework.http.HttpStatus;
+&nbsp;import org.springframework.http.ResponseEntity;
+&nbsp;import org.springframework.stereotype.Service;
+&nbsp;
+&nbsp;import java.util.*;
+&nbsp;
+&nbsp;@Service
+&nbsp;public class EmployeeService {
+&nbsp;
+&nbsp;    EmployeeDao employeeDao;
+&nbsp;    DepartmentDao departmentDao;
+<b class="nc">&nbsp;    EmployeeService(EmployeeDao employeeDao, DepartmentDao departmentDao) {</b>
+<b class="nc">&nbsp;        this.employeeDao = employeeDao;</b>
+<b class="nc">&nbsp;        this.departmentDao = departmentDao;</b>
+&nbsp;    }
+&nbsp;    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; getAllEmployees(PageRequest pageRequest) {
+<b class="nc">&nbsp;        Map&lt;String, Object&gt; responseMap = new HashMap&lt;&gt;();</b>
+&nbsp;       try {
+<b class="nc">&nbsp;           Page&lt;Employee&gt; employees = employeeDao.findAll(pageRequest);</b>
+<b class="nc">&nbsp;           if (employees.isEmpty()) {</b>
+<b class="nc">&nbsp;               responseMap.put(&quot;message&quot;, &quot;No employee found&quot;);</b>
+<b class="nc">&nbsp;               responseMap.put(&quot;size&quot;, 0);</b>
+<b class="nc">&nbsp;               return new ResponseEntity&lt;&gt;(responseMap,HttpStatus.NO_CONTENT);</b>
+&nbsp;           }
+<b class="nc">&nbsp;           responseMap.put(&quot;size&quot;, employees.get().count());</b>
+<b class="nc">&nbsp;           responseMap.put(&quot;data&quot;, employees);</b>
+<b class="nc">&nbsp;           return new ResponseEntity&lt;&gt;(responseMap, HttpStatus.OK);</b>
+<b class="nc">&nbsp;       } catch (Exception e) {</b>
+<b class="nc">&nbsp;           responseMap.put(&quot;message&quot;, e.getMessage());</b>
+<b class="nc">&nbsp;           responseMap.put(&quot;status&quot;, HttpStatus.BAD_REQUEST.toString());</b>
+<b class="nc">&nbsp;           return new ResponseEntity&lt;&gt;(responseMap, HttpStatus.BAD_REQUEST);</b>
+&nbsp;       }
+&nbsp;    }
+&nbsp;
+&nbsp;    public ResponseEntity&lt;Map&lt;String,Object&gt;&gt; addEmployee(Employee employee, UUID departmentID) {
+<b class="nc">&nbsp;        Map&lt;String, Object&gt; responseMap = new HashMap&lt;&gt;();</b>
+&nbsp;       try {
+<b class="nc">&nbsp;           Optional&lt;Department&gt; departmentResponse = departmentDao.findById(departmentID);</b>
+<b class="nc">&nbsp;           if(departmentResponse.isEmpty()){</b>
+<b class="nc">&nbsp;               responseMap.put(&quot;message&quot;, &quot;No department found with ID &quot; + departmentID);</b>
+<b class="nc">&nbsp;               return new ResponseEntity&lt;&gt;(responseMap, HttpStatus.BAD_REQUEST);</b>
+&nbsp;           }
+<b class="nc">&nbsp;           employee.setDepartment(departmentResponse.get());</b>
+<b class="nc">&nbsp;           employeeDao.save(employee);</b>
+<b class="nc">&nbsp;           responseMap.put(&quot;message&quot;, &quot;Employee &quot; + employee.getId() + &quot; added successfully&quot;);</b>
+<b class="nc">&nbsp;              responseMap.put(&quot;data&quot;, employee);</b>
+<b class="nc">&nbsp;           return new ResponseEntity&lt;&gt;(responseMap, HttpStatus.CREATED);</b>
+<b class="nc">&nbsp;       } catch (Exception e) {</b>
+<b class="nc">&nbsp;           responseMap.put(&quot;message&quot;, e.getMessage());</b>
+<b class="nc">&nbsp;           return new ResponseEntity&lt;&gt;(responseMap, HttpStatus.BAD_REQUEST);</b>
+&nbsp;       }
+&nbsp;    }
+&nbsp;
+&nbsp;    public ResponseEntity&lt;Map&lt;String,String&gt;&gt; deleteEmployee(UUID id) {
+<b class="nc">&nbsp;        Map&lt;String, String&gt; responseMap = new HashMap&lt;&gt;();</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            employeeDao.deleteById(id);</b>
+<b class="nc">&nbsp;            responseMap.put(&quot;message&quot;, &quot;Employee deleted successfully with ID of &quot; +id);</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(responseMap, HttpStatus.OK);</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            responseMap.put(&quot;message&quot;, e.getMessage());</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(responseMap, HttpStatus.BAD_REQUEST);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public ResponseEntity&lt;Map&lt;String,Object&gt;&gt; updateEmployee(Employee employee) {
+<b class="nc">&nbsp;        Map&lt;String,Object&gt; responseMap = new HashMap&lt;&gt;();</b>
+&nbsp;
+&nbsp;        try {
+<b class="nc">&nbsp;            Optional&lt;Employee&gt; employeeResponse =   employeeDao.findById(employee.getId());</b>
+<b class="nc">&nbsp;            if(employeeResponse.isEmpty()){</b>
+<b class="nc">&nbsp;                responseMap.put(&quot;message&quot;, &quot;No supplier found with ID &quot; + employee.getId());</b>
+<b class="nc">&nbsp;                return new ResponseEntity&lt;&gt;(responseMap, HttpStatus.NO_CONTENT);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            employeeResponse.get().update(employee);</b>
+<b class="nc">&nbsp;            employeeDao.save(employeeResponse.get());</b>
+<b class="nc">&nbsp;            responseMap.put(&quot;message&quot;, &quot;Employee updated successfully with ID of &quot; + employee.getId());</b>
+<b class="nc">&nbsp;            responseMap.put(&quot;data&quot;, employeeResponse.get());</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(responseMap, HttpStatus.OK);</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            responseMap.put(&quot;message&quot;, e.getMessage());</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(responseMap, HttpStatus.BAD_REQUEST);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public ResponseEntity&lt;Map&lt;String,Object&gt;&gt; getEmployeeById(UUID id) {
+<b class="nc">&nbsp;        Map&lt;String, Object&gt; responseMap = new HashMap&lt;&gt;();</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            Optional&lt;Employee&gt; employee = employeeDao.findById(id);</b>
+<b class="nc">&nbsp;            if (employee.isEmpty()) {</b>
+<b class="nc">&nbsp;                responseMap.put(&quot;message&quot;, &quot;No employee found with ID &quot; + id);</b>
+<b class="nc">&nbsp;                responseMap.put(&quot;size&quot;, 0);</b>
+<b class="nc">&nbsp;                return new ResponseEntity&lt;&gt;(responseMap,HttpStatus.NO_CONTENT);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            responseMap.put(&quot;size&quot;, 1);</b>
+<b class="nc">&nbsp;            responseMap.put(&quot;data&quot;, employee.get());</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(responseMap, HttpStatus.OK);</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            responseMap.put(&quot;message&quot;, e.getMessage());</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(responseMap, HttpStatus.BAD_REQUEST);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public ResponseEntity &lt;Map&lt;String, Object&gt;&gt; generateFakeEmployee(int count, UUID departmentID){
+<b class="nc">&nbsp;        Map&lt;String, Object&gt; responseMap = new HashMap&lt;&gt;();</b>
+<b class="nc">&nbsp;        List&lt;Employee&gt; employeeList = new ArrayList&lt;&gt;();</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            int savedCounter = 0;</b>
+<b class="nc">&nbsp;            int duplicateCounter = 0;</b>
+<b class="nc">&nbsp;            Optional&lt;Department&gt; departmentResponse = departmentDao.findById(departmentID);</b>
+<b class="nc">&nbsp;            if(departmentResponse.isEmpty()){</b>
+<b class="nc">&nbsp;                responseMap.put(&quot;message&quot;, &quot;No department found with ID &quot; + departmentID);</b>
+<b class="nc">&nbsp;                return new ResponseEntity&lt;&gt;(responseMap, HttpStatus.BAD_REQUEST);</b>
+&nbsp;            }
+&nbsp;
+<b class="nc">&nbsp;            for(int i = 0; i &lt; count; i++){</b>
+<b class="nc">&nbsp;                Employee employee = new Employee();</b>
+<b class="nc">&nbsp;                Faker faker = new Faker();</b>
+<b class="nc">&nbsp;                employee.setFirstName(faker.name().firstName());</b>
+<b class="nc">&nbsp;                employee.setLastName(faker.name().lastName());</b>
+<b class="nc">&nbsp;                employee.setEmail(employee.getFirstName()+employee.getLastName()+&quot;@&quot;+ faker.internet().domainName());</b>
+<b class="nc">&nbsp;                employee.setDepartment(departmentResponse.get());</b>
+<b class="nc">&nbsp;                employee.setPhone(faker.phoneNumber().cellPhone());</b>
+<b class="nc">&nbsp;                employee.setPosition(faker.job().title());</b>
+<b class="nc">&nbsp;                employee.setDailyRate(faker.number().randomDouble(2, 100, 1000));</b>
+<b class="nc">&nbsp;                employee.setEmergencyLeaveCredits(faker.number().randomDigit());</b>
+<b class="nc">&nbsp;                employee.setMaternityLeaveCredits(faker.number().randomDigit());</b>
+<b class="nc">&nbsp;                employee.setPaternityLeaveCredits(faker.number().randomDigit());</b>
+<b class="nc">&nbsp;                employee.setSickLeaveCredits(faker.number().randomDigit());</b>
+<b class="nc">&nbsp;                employee.setVacationLeaveCredits(faker.number().randomDigit());</b>
+<b class="nc">&nbsp;                List&lt;String&gt; paySchedules = Arrays.asList(&quot;Weekly&quot;, &quot;Bi-Weekly&quot;, &quot;Monthly&quot;);</b>
+<b class="nc">&nbsp;                int randomIndex = new Random().nextInt(paySchedules.size());</b>
+<b class="nc">&nbsp;                employee.setPaySchedule(paySchedules.get(randomIndex));</b>
+<b class="nc">&nbsp;                Optional&lt;Employee&gt; employeeResponse = employeeDao.findByEmail(employee.getEmail());</b>
+<b class="nc">&nbsp;                if(employeeResponse.isEmpty()){</b>
+<b class="nc">&nbsp;                    employeeDao.save(employee);</b>
+<b class="nc">&nbsp;                    savedCounter++;</b>
+&nbsp;                }
+&nbsp;                else{
+<b class="nc">&nbsp;                    duplicateCounter++;</b>
+&nbsp;                }
+<b class="nc">&nbsp;                employeeList.add(employee);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            responseMap.put(&quot;data&quot;, employeeList);</b>
+<b class="nc">&nbsp;            responseMap.put(&quot;message&quot;, savedCounter + &quot; fake employee added successfully with &quot; + duplicateCounter + &quot; duplicates&quot;);</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(responseMap, HttpStatus.CREATED);</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            responseMap.put(&quot;message&quot;, e.getMessage());</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(responseMap, HttpStatus.BAD_REQUEST);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public ResponseEntity&lt;Map&lt;String, Object&gt;&gt; getEmployeeByEmail(String email) {
+<b class="nc">&nbsp;        Map&lt;String, Object&gt; responseMap = new HashMap&lt;&gt;();</b>
+&nbsp;        try {
+<b class="nc">&nbsp;            Optional&lt;Employee&gt; employee = employeeDao.findByEmail(email);</b>
+<b class="nc">&nbsp;            if (employee.isEmpty()) {</b>
+<b class="nc">&nbsp;                responseMap.put(&quot;message&quot;, &quot;No employee found with email &quot; + email);</b>
+<b class="nc">&nbsp;                responseMap.put(&quot;size&quot;, 0);</b>
+<b class="nc">&nbsp;                return new ResponseEntity&lt;&gt;(responseMap,HttpStatus.NO_CONTENT);</b>
+&nbsp;            }
+<b class="nc">&nbsp;            responseMap.put(&quot;size&quot;, 1);</b>
+<b class="nc">&nbsp;            responseMap.put(&quot;data&quot;, employee.get());</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(responseMap, HttpStatus.OK);</b>
+<b class="nc">&nbsp;        } catch (Exception e) {</b>
+<b class="nc">&nbsp;            responseMap.put(&quot;message&quot;, e.getMessage());</b>
+<b class="nc">&nbsp;            return new ResponseEntity&lt;&gt;(responseMap, HttpStatus.BAD_REQUEST);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2024-02-12 09:18</div>
+</div>
+</body>
+</html>
