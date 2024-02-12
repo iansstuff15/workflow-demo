@@ -32,4 +32,16 @@ public class Payroll {
     @ManyToOne
     @JoinColumn(nullable = false)
     private Employee employee;
+
+    public void update(Payroll payroll) {
+    if(payroll.getGrossPay() != 0) {
+        this.setGrossPay(payroll.getGrossPay());
+        this.netPay = this.grossPay - this.deductions;
+    }
+    if(payroll.getDeductions() != 0) {
+        this.setDeductions(payroll.getDeductions());
+        this.netPay = this.grossPay - this.deductions;
+    }
+    this.setUpdatedAt(new Timestamp(System.currentTimeMillis()));
+    }
 }
