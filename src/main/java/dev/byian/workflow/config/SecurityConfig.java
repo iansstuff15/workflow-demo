@@ -34,7 +34,7 @@ public class SecurityConfig {
     }
     @Bean
     public InMemoryUserDetailsManager inMemoryUserDetailsManager() {
-        return new InMemoryUserDetailsManager(User.withUsername("ian").password("{noop}password").authorities("read").build());
+        return new InMemoryUserDetailsManager(User.withUsername("ian").password("{noop}password").authorities("admin").build());
     }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
