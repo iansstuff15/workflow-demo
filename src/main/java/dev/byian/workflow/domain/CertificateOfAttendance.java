@@ -35,14 +35,32 @@ public class CertificateOfAttendance {
     private Date startDate;
     @Column(nullable = false)
     private Date endDate;
-    @Column(nullable = false)
-    private Time startTime;
-    @Column(nullable = false)
-    private Time endTime;
     @ManyToOne
     @JoinColumn(nullable = false)
     private Employee appliedBy;
     @ManyToOne
     @JoinColumn(nullable = false)
     private Employee reviwedBy;
+
+    public void update(CertificateOfAttendance certificateOfAttendance){
+        if(certificateOfAttendance.getReason() != null){
+            this.reason = certificateOfAttendance.getReason();
+        }
+        if(certificateOfAttendance.getStatus() != null){
+            this.status = certificateOfAttendance.getStatus();
+        }
+        if(certificateOfAttendance.getAttachment() != null){
+            this.attachment = certificateOfAttendance.getAttachment();
+        }
+        if(certificateOfAttendance.getStartDate() != null){
+            this.startDate = certificateOfAttendance.getStartDate();
+        }
+        if(certificateOfAttendance.getEndDate() != null){
+            this.endDate = certificateOfAttendance.getEndDate();
+        }
+        if(certificateOfAttendance.getReviwedBy() != null){
+            this.reviwedBy = certificateOfAttendance.getReviwedBy();
+        }
+        this.updatedAt = new Timestamp(System.currentTimeMillis());
+    }
 }
